@@ -1,0 +1,56 @@
+<nav class="navbar navbar-expand-md bg-dark navbar-dark" *ngIf="this.nav == false">
+	<a class="navbar-brand" href="#">KRSA</a>
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+	  <span class="navbar-toggler-icon"></span>
+	</button>
+	<div class="collapse navbar-collapse" id="collapsibleNavbar">
+		<ul class="navbar-nav ml-auto">
+			<li class="nav-item nav-option">
+			  <a class="nav-link bold" routerLink="/login" routerLinkActive="active">Login</a>
+			</li>
+			<li class="nav-item nav-option">
+			  <a class="nav-link bold" routerLink="/page" routerLinkActive="active">Signup</a>
+			</li>
+		</ul>
+	</div>
+</nav>
+
+<nav class="navbar navbar-expand-md bg-dark navbar-dark" *ngIf="this.nav == true">
+	<a class="navbar-brand" href="#">KRSA</a>
+	<button class="navbar-toggler" type="button" (click)="this.isCollapsed = !this.isCollapsed" [attr.aria-expanded]="!isCollapsed" aria-controls="navbar_2" aria-label="Toggle navigation">
+	  <span class="navbar-toggler-icon"></span>
+	</button>
+	<div class="collapse navbar-collapse" id="navbar_2" [ngbCollapse]="this.isCollapsed">
+		<ul class="navbar-nav ml-auto">
+			<li class="nav-item nav-option bold">
+			  <a class="nav-link" routerLink="/users" routerLinkActive="active">Users</a>
+			</li>
+			<li class="nav-item nav-option bold">
+			  <a class="nav-link mouseover" (click)="logout()" routerLinkActive="active">Signout</a>
+			</li>
+		</ul>
+	</div>
+</nav>
+
+
+<!-- <mat-toolbar color="primary" *ngIf="this.nav == false">
+	<mat-toolbar-row>
+		<span>KRSA</span>
+		<span class="example-spacer"></span>
+		<span class="pl-3"><a class="white" routerLink="/login" routerLinkActive="active">Login</a></span>
+		<span class="pl-3"><a class="white" routerLink="/page" routerLinkActive="active">Signup</a></span>
+	</mat-toolbar-row>  
+</mat-toolbar>
+
+<mat-toolbar color="primary" *ngIf="this.nav == true">
+	<mat-toolbar-row>
+		<span>KRSA</span>
+		<span class="example-spacer"></span>
+		<span class="pl-3"><a class="white" routerLink="/users" routerLinkActive="active">Users</a></span>
+		<span class="pl-3 mouseover"><a class="white" (click)="logout()">Logout</a></span>
+	</mat-toolbar-row>  
+</mat-toolbar> -->
+
+
+<router-outlet></router-outlet>
+<!-- <app-login></app-login> -->

@@ -1,0 +1,94 @@
+<div class="container" *ngIf="this.userid == null">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>No. </th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Type</th>
+                        <th>Edit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let user of userslist; let i = index">
+                        <td>{{ i + 1 }}.</td>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            <span *ngIf="user.type == 1">Admin</span>
+                            <span *ngIf="user.type == 0">User</span>
+                        </td>
+                        <td (click)="editSingleUser(user.id)" class="mousepointer"><fa-icon [icon]="this.faPencilAlt"></fa-icon></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="container usersform" *ngIf="this.userid != null">
+        <div class="row">
+            <div class="col-sm-12 text-right">
+                <div class="avatar_image">
+                    <span class="badge badge-pill badge-danger delete" (click)="removeUserAvatar()" *ngIf="this.avatar!='../../assets/images/nature1.jpg'"><fa-icon [icon]="this.faTimes"></fa-icon></span>
+                    <img [src]="this.avatar" alt="User Avatar" class="avatar" />
+                </div>
+                <div class="text-right">
+                    <angular-file-uploader #fileUpload1
+                        [config]="afuConfig"
+                        (ApiResponse)="uploadResponse($event)"
+                        >
+                    </angular-file-uploader>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <form [formGroup]="usersForm" id="users-form">
+                    <div class="form-group">
+                        <label for="user_name">Name</label>
+                        <input type="text" class="form-control" placeholder="Name" id="user_name" formControlName="name" />
+                    </div>
+                    <div class="form-group">
+                        <label for="user_email">Email</label>
+                        <input type="text" class="form-control" placeholder="Email" id="user_email" formControlName="email" />
+                    </div>
+                    <div class="form-group">
+                        <label for="user_type">Type</label>
+                        <select class="form-control" id="user_type" formControlName="type">
+                            <option value="1">Admin</option>
+                            <option value="0">User</option>
+                        </select>
+                    </div>
+                    <div class="right">
+                        <button (click)="modifyUser()" class="btn btn-primary">Submit</button>
+                        <!-- <button (click)="modifyUser()" mat-raised-button color="primary">Submit</button> -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>     
+
+            <!-- <div class="center">
+                <mat-form-field appearance="fill">
+                    <mat-label>Enter your Name</mat-label>
+                    <input matInput placeholder="Surendar" formControlName="name">
+                </mat-form-field>
+                <br>
+                <mat-form-field appearance="fill">
+                        <mat-label>Enter your email</mat-label>
+                        <input matInput placeholder="yourmail@domain.com" formControlName="email">
+                </mat-form-field>
+                <br>
+                <mat-form-field appearance="fill">
+                    <mat-label>Type</mat-label>
+                    <select matNativeControl formControlName="type">
+                      <option value="1">Admin</option>
+                      <option value="0">User</option>
+                    </select>
+                </mat-form-field>
+            </div> -->
+        
+    
+
+
+<!-- <mat-spinner *ngIf="this.usersLoader" class="loader"></mat-spinner> -->
+<div class="spinner-border text-primary loader" *ngIf="this.usersLoader"></div>

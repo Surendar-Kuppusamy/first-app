@@ -1,0 +1,21 @@
+
+
+        #AllowOverride None
+        #Require all granted
+        Header always set Access-Control-Allow-Origin "*"
+        Header always set Access-Control-Allow-Methods "POST, GET, OPTIONS, DELETE, PUT"
+        Header always set Access-Control-Allow-Headers "x-requested-with, Content-Type, X-CSRF-TOKEN, Authorization"
+        Header always set Set-Cookie: krsa=first-app;
+        #Header always set Access-Control-Expose-Headers "Content-Security-Policy, Location"
+        #Header always set Access-Control-Max-Age "86400"
+
+        RewriteEngine On
+        RewriteCond %{REQUEST_METHOD} OPTIONS
+        RewriteRule ^(.*)$ $1 [R=200,L]
+
+        php_value include_path "D:/Apache/Apache24/htdocs/Server/Angular10/Class/"
+        php_value auto_prepend_file "autoload_cli.php"
+        
+
+
+

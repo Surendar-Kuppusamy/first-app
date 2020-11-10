@@ -1,0 +1,30 @@
+<div class="container-fluid bi">
+	<h2 class="heading">Login Page</h2>
+	<div class="block" *ngIf="!this.loginLoader">
+		<form [formGroup]="loginForm" id="demo-form">
+			<div class="form-group">
+				<label for="user_email">Enter your email</label>
+				<input type="email" class="form-control" id="user_email" placeholder="yourmail@domain.com" formControlName="email" />
+			</div>
+			<div class="form-group">
+				<label for="user_password">Password</label>
+				<input type="password" class="form-control" id="user_password" placeholder="Password" formControlName="password" />
+			</div>
+			<div class="right">
+				<button (click)="executeImportantAction()" class="btn btn-primary" data-sitekey="6Lc8_tkZAAAAALeKPQpA-XmwDUJEYRrBfxu5HHck">Login</button>
+			</div>
+			<button (click)="signInWithGoogle()">LOGIN WITH GOOGLE</button>
+				<!-- <div>{{loginForm.controls["email"].value}}</div> -->
+		</form>
+	</div>
+
+<div class="spinner-border text-primary loader" *ngIf="this.loginLoader"></div>
+
+<div class="card cookie-card" *ngIf="!this.cookieCard">
+	<div class="card-body">
+	  <h4 class="card-title">Cookies</h4>
+	  <p class="card-text">It makes easy to serve you.</p>
+	  <a class="card-link" (click)="hideCard()">No Thanks</a>
+	  <a class="card-link" (click)="setCookie()">Accept</a>
+	</div>
+</div>
