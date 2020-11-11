@@ -11,6 +11,14 @@
         "google/recaptcha": "^1.2",
         "google/apiclient": "^2.8"
     },
+    "scripts": {
+        "post-update-cmd": "Google\\Task\\Composer::cleanup"
+    },
+    "extra": {
+        "google/apiclient-services": [
+            "Gmail"
+        ]
+    },
     "autoload": {
         "psr-4": {
             "App\\": "app",

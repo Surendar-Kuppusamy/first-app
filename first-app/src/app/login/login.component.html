@@ -13,7 +13,9 @@
 			<div class="right">
 				<button (click)="executeImportantAction()" class="btn btn-primary" data-sitekey="6Lc8_tkZAAAAALeKPQpA-XmwDUJEYRrBfxu5HHck">Login</button>
 			</div>
-			<button (click)="signInWithGoogle()">LOGIN WITH GOOGLE</button>
+			<div class="right mt-2">
+				<button (click)="signInWithGoogle()" class="btn btn-danger"><fa-icon [icon]="faGooglePlusG"></fa-icon> LOGIN WITH GOOGLE</button>
+			</div>
 				<!-- <div>{{loginForm.controls["email"].value}}</div> -->
 		</form>
 	</div>

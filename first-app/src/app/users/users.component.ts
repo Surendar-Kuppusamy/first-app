@@ -4,10 +4,8 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { LockerModule, Locker, DRIVERS } from 'angular-safeguard';
 import { AjaxService } from '../ajax/ajax.service';
 import { ToastrService } from 'ngx-toastr';
-import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { AngularFileUploaderConfig } from 'angular-file-uploader';
-
+import { faPencilAlt, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
 	selector: 'app-users',
@@ -25,9 +23,9 @@ export class UsersComponent implements OnInit {
 	public userid;
 	public results;
 	public check_user_id;
-	public faPencilAlt = faPencilAlt;
-	public faTimes = faTimes;
 	public avatar;
+	public faPencilAlt=faPencilAlt;
+	public faTimes=faTimes;
 
 	public id=this.activatedRoute.snapshot.paramMap.get('id');
 

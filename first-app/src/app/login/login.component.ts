@@ -7,6 +7,8 @@ import { Observable } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { ReCaptchaV3Service } from 'ng-recaptcha';
 import { LockerModule, Locker, DRIVERS } from 'angular-safeguard';
+import { faPencilAlt, faTimes, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faGoogle, faGooglePlusG } from '@fortawesome/free-brands-svg-icons';
 import { SocialAuthService } from "angularx-social-login";
 import { SocialUser } from "angularx-social-login";
 import { FacebookLoginProvider, GoogleLoginProvider } from "angularx-social-login";
@@ -24,7 +26,8 @@ export class LoginComponent implements OnInit {
 	public subscription;
 	public handletoken;
 	public loginLoader = false;
-	private myClientId: string = '1040864376459-915ppinugtml87rq9i5o0hohirrjknhq.apps.googleusercontent.com';
+	public faGooglePlusG=faGooglePlusG;
+	public faPlus=faPlus;
 	user: SocialUser;
 
 	constructor(private ajax:AjaxService, private toastr: ToastrService, private recaptchaV3Service: ReCaptchaV3Service, private router: Router, private locker: Locker, private authService: SocialAuthService) { }
@@ -32,6 +35,10 @@ export class LoginComponent implements OnInit {
 	signInWithGoogle() {
 		this.authService.signIn(GoogleLoginProvider.PROVIDER_ID);
 	}
+
+	/* signOut() {
+		this.authService.signOut();
+	} */
 
 	loginForm = new FormGroup({
 		email: new FormControl(''),

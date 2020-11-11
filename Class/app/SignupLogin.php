@@ -27,6 +27,12 @@ class SignupLogin extends \Singleton {
         $client = new Google_Client(['client_id' => $CLIENT_ID]);  // Specify the CLIENT_ID of the app that accesses the backend
         $payload = $client->verifyIdToken($google_token);
         if($payload) {
+            $qry = "SELECT EXISTS (SELECT * FROM google_users WHERE email = '".$payload['email']."')";
+            $qry_res = $this->con->qry($qry, true);
+            if($qry_res) {
+                $qry_1 = "DELETE FROM google_users WHERE email = '".$payload['email']."'";
+                $this->con->qry($qry_1, true);
+            }
             $query = "INSERT INTO google_users(email, name) VALUES('".$payload['email']."', '".$payload['name']."')";
             $this->con->qry($query, true);
             $error=$this->con->error();
