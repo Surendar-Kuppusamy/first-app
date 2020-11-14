@@ -13,6 +13,7 @@ return array(
     'Credis_Module' => $vendorDir . '/colinmollenhour/credis/Module.php',
     'Credis_Sentinel' => $vendorDir . '/colinmollenhour/credis/Sentinel.php',
     'Google_Task_Composer' => $vendorDir . '/google/apiclient/src/aliases.php',
+    'PHPGangsta_GoogleAuthenticator' => $vendorDir . '/phpgangsta/googleauthenticator/PHPGangsta/GoogleAuthenticator.php',
     'Session' => $baseDir . '/include/Session.php',
     'Singleton' => $baseDir . '/include/Singleton.php',
     'Stringable' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',

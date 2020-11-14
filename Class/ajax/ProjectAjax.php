@@ -34,5 +34,13 @@ if($data['command'] == 'removeUserAvatar') {
     $response->send();
 }
 
+if($data['command'] == 'mfaAction') {
+    $user_obj = Users::getInstance();
+    $res = $user_obj->userMfa($data['id'], $data['user_detail']);
+    $response->setData($res);
+    $response->send();
+}
+
+
 
 ?>

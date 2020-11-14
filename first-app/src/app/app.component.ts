@@ -4,6 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { AjaxService } from './ajax/ajax.service';
 import {LockerModule, Locker, DRIVERS} from 'angular-safeguard';
 import { LoginComponent } from './login/login.component';
+import { AuthService } from './auth/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +17,7 @@ export class AppComponent {
   	public results;
 	public isCollapsed=true;
 
-  	constructor(private route: ActivatedRoute, private ajax: AjaxService, private toastr: ToastrService, private router: Router, private locker: Locker) {}
+  	constructor(private route: ActivatedRoute, private ajax: AjaxService, private toastr: ToastrService, private router: Router, private locker: Locker, private authService: AuthService) {}
   	title = 'first-app';
   	nav = false;
 
@@ -36,6 +37,7 @@ export class AppComponent {
 		if(this.results['status'] == 'success') {
 			this.toastr.success(this.results.message);
 			this.locker.remove(DRIVERS.COOKIE, 'token');
+			this.authService.emitLogout('logout');
 			this.router.navigate(['login']);
 			window.location.reload();
 		} else {

@@ -4,6 +4,8 @@ namespace App;
 
 use DB\DB;
 use Rakit\Validation\Validator;
+use PHPGangsta_GoogleAuthenticator;
+
 
 class Users extends \Singleton {
 
@@ -127,6 +129,35 @@ class Users extends \Singleton {
         } else {
             $res = ['status' => 'success', 'message' => 'Image Removed.'];
             return $res;
+        }
+    }
+
+    public function userMfa($id, $user_detail) {
+        if($user_detail['mfa']) {
+            $ga = new PHPGangsta_GoogleAuthenticator();
+            $secret = $ga->createSecret();
+            $qrCodeUrl = $ga->getQRCodeGoogleUrl($user_detail['email'], $secret);
+            $query = "UPDATE users SET mfa_secret_key = '".$secret."', mfa_status = '".$user_detail['mfa']."' WHERE id = '".$id."'";
+            $this->db->qry($query, false);
+            $error = $this->db->error();
+            if($error[0] != '0000') {
+                $res = ['status' => 'error', 'message' => $error[2]];
+                return $res;
+            } else {
+                $res = ['status' => 'success', 'message' => 'QR code generated', 'data' => urlencode($qrCodeUrl), 'action' => 'mfa_add'];
+                return $res;
+            }
+        } else {
+            $query = "UPDATE users SET mfa_secret_key = '', mfa_status = '".$user_detail['mfa']."' WHERE id = '".$id."'";
+            $this->db->qry($query, false);
+            $error = $this->db->error();
+            if($error[0] != '0000') {
+                $res = ['status' => 'error', 'message' => $error[2]];
+                return $res;
+            } else {
+                $res = ['status' => 'success', 'message' => 'MFA is disabled.', 'action' => 'mfa_disable'];
+                return $res;
+            }
         }
     }
 }

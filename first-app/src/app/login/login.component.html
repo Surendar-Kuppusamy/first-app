@@ -30,3 +30,29 @@
 	  <a class="card-link" (click)="setCookie()">Accept</a>
 	</div>
 </div>
+
+
+<ng-template #login_mfa_modal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">MFA</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-sm-12 mt-2">
+				<div class="form-group">
+					<label for="mfa_code">Enter your MFA one time code</label>
+					<input type="text" class="form-control" id="mfa_code"  [formControl]="mfaCode" />
+				</div>
+				<div class="right mt-1">
+					<button class="btn btn-primary" (click)="loginWithMFA()">Submit</button>
+				</div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+    </div>
+</ng-template>

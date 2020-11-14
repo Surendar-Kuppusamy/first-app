@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, ViewChild } from '@angular/core';
+import { Component, OnInit, EventEmitter, ViewChild, Directive, HostListener, ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
 import { LockerModule, Locker, DRIVERS } from 'angular-safeguard';
@@ -6,6 +6,8 @@ import { AjaxService } from '../ajax/ajax.service';
 import { ToastrService } from 'ngx-toastr';
 import { AngularFileUploaderConfig } from 'angular-file-uploader';
 import { faPencilAlt, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { NgbModal, ModalDismissReasons, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
+
 
 @Component({
 	selector: 'app-users',
@@ -15,7 +17,11 @@ import { faPencilAlt, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 export class UsersComponent implements OnInit {
 
-	constructor(private router: Router, private locker: Locker, private ajaxService: AjaxService, private activatedRoute: ActivatedRoute, private toastrService: ToastrService) {}
+	@ViewChild('mfa_modal') modalId: any;
+
+	constructor(private router: Router, private locker: Locker, private ajaxService: AjaxService, private activatedRoute: ActivatedRoute, private toastrService: ToastrService, private modalService: NgbModal) {}
+
+	closeResult = '';
 
 	public usersLoader=false;
 	public users;
@@ -24,8 +30,10 @@ export class UsersComponent implements OnInit {
 	public results;
 	public check_user_id;
 	public avatar;
+	public mfa_qr_code;
 	public faPencilAlt=faPencilAlt;
 	public faTimes=faTimes;
+
 
 	public id=this.activatedRoute.snapshot.paramMap.get('id');
 
@@ -64,7 +72,8 @@ export class UsersComponent implements OnInit {
 	usersForm = new FormGroup({
 		name : new FormControl(''),
 		email : new FormControl(''),
-		type : new FormControl('')
+		type : new FormControl(''),
+		mfa : new FormControl('')
 	});
 
 	
@@ -129,7 +138,9 @@ export class UsersComponent implements OnInit {
 				name: this.users.data.name,
 				email: this.users.data.email,
 				type: this.users.data.type,
+				mfa: (this.users.data.mfa_status == 0)? false : true
 			});
+			//document.getElementById('mfa_switch').checked=this.users.data.mfa_status;
 			if(this.users.data.avatar=='') {
 				this.avatar='../../assets/images/nature1.jpg';
 			} else {
@@ -193,5 +204,37 @@ export class UsersComponent implements OnInit {
 			}
 			this.usersLoader=false;
 		});		
+	}
+
+	mfaToogle(event) {
+		//console.log(this.usersForm.value);
+		//console.log(this.usersForm.get('mfa').value);
+		//let mfa_st = this.usersForm.get('mfa').value;
+		event.srcElement.blur();
+		event.preventDefault();
+		this.usersLoader=true;
+		const mfa_url = 'http://localhost/Server/Angular10/Class/ajax/ProjectAjax.php';
+		const data = {
+			command: 'mfaAction',
+			id: this.userid,
+			user_detail: this.usersForm.value
+		};
+		this.ajaxService.post(mfa_url, data).subscribe(res => {
+			this.results = res;
+			if(this.results.status == 'success') {
+				if(this.results.action == 'mfa_disable') {
+					this.toastrService.success(this.results.message);
+				} else {
+					this.toastrService.success(this.results.message);
+					this.mfa_qr_code = decodeURIComponent(this.results.data);
+					setTimeout(() => {
+						this.modalService.open(this.modalId);
+					}, 100);
+				}
+			} else {
+				this.toastrService.error(this.results.message);
+			}
+			this.usersLoader=false;
+		});
 	}
 }

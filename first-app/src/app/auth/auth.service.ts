@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot,RouterStateSnapshot } from '@angular/router';
+import { Subject } from 'rxjs';
 import { AjaxService } from '../ajax/ajax.service'
 
 @Injectable({
@@ -8,6 +9,8 @@ import { AjaxService } from '../ajax/ajax.service'
 export class AuthService implements CanActivate {
 
 	public results;
+	private logoutEvent = new Subject<string>();
+	logoutEventEmit$ = this.logoutEvent.asObservable();
 
 	constructor(private _router:Router, private ajax: AjaxService) { }
 
@@ -22,5 +25,9 @@ export class AuthService implements CanActivate {
 			}
 		}); */
 		return true;
+	}
+
+	emitLogout(action: string) {
+		this.logoutEvent.next(action);
 	}
 }

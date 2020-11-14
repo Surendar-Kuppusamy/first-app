@@ -20,6 +20,16 @@ $data = json_decode($request->getContent(), true);
 
     }
 
+    if($data['command'] == 'loginWithMFA') {
+        $sl = SignupLogin::getInstance();
+        $res = $sl->loginActionWithMFA($data['form_value'], $data['mfa_code']);
+        
+        $response = new MyResponse();
+        $response->setData($res);
+        $response->send();
+
+    }
+
     if($data['command'] == 'loginWithGoogle') {
         $sl = SignupLogin::getInstance();
         $res = $sl->loginWithGoogle($data['google_token']);
@@ -28,11 +38,5 @@ $data = json_decode($request->getContent(), true);
         $response->setData($res);
         $response->send();
     }
-
-    
-
-
-
-
 
 ?>

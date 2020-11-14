@@ -17,6 +17,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AngularFileUploaderModule } from "angular-file-uploader";
 import { SocialLoginModule, SocialAuthServiceConfig } from 'angularx-social-login';
 import { GoogleLoginProvider, FacebookLoginProvider } from 'angularx-social-login';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
 	declarations: [
@@ -41,7 +42,8 @@ import { GoogleLoginProvider, FacebookLoginProvider } from 'angularx-social-logi
 		LockerModule,
 		FontAwesomeModule,
 		AngularFileUploaderModule,
-		SocialLoginModule
+		SocialLoginModule,
+		NgbModule
 	],
 	providers: [
 		{ provide: RECAPTCHA_V3_SITE_KEY, useValue: '6Lc8_tkZAAAAALeKPQpA-XmwDUJEYRrBfxu5HHck' },

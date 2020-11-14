@@ -9,7 +9,8 @@
         "vlucas/phpdotenv": "^5.2",
         "firebase/php-jwt": "^5.2",
         "google/recaptcha": "^1.2",
-        "google/apiclient": "^2.8"
+        "google/apiclient": "^2.8",
+        "phpgangsta/googleauthenticator": "dev-master"
     },
     "scripts": {
         "post-update-cmd": "Google\\Task\\Composer::cleanup"

@@ -7,6 +7,7 @@ use Dotenv\Dotenv;
 use \Firebase\JWT\JWT;
 use ReCaptcha\ReCaptcha;
 use Google_Client;
+use PHPGangsta_GoogleAuthenticator;
 use DB\DB;
 
 
@@ -98,20 +99,45 @@ class SignupLogin extends \Singleton {
         } else {
             $userStatus = $this->checkCredential($data);
             if($userStatus) {
-                $query_1 = "SELECT id, hash_id FROM users WHERE email = '".$data['email']."' AND password = '".$data['password']."'";
+                $query_1 = "SELECT id, hash_id, mfa_status FROM users WHERE email = '".$data['email']."' AND password = '".$data['password']."'";
                 $resq_1 = $this->con->qry($query_1, true);
-                if($this->con->error()[1]) {
-                    $re = ["status"=> "error", "message" => "Something went wrong."];
+                $error = $this->con->error();
+                if($error[0] != '0000') {
+                    $re = ["status"=> "error", "message" => "Something went wrong.", "log" => $error[2]];
                     return $re;
                 }
                 $token = $this->generateToken($resq_1['id']);
                 $sess_obj = \Session::createSession($data, $resq_1['id'], $token);
-                $re = ["status"=> "success", "message" => "Login get success", "token" => $token, "data" => json_encode($resp->toArray())];
+                $re = ["status"=> "success", "message" => "Login get success", "token" => $token, "data" => json_encode($resp->toArray()), 'mfa_status' => $resq_1['mfa_status']];
                 return $re;
             } else {
                 $re = ["status"=> "error", "message" => "Invalid Credential"];
                 return $re;
             }
+        }
+    }
+
+    public function loginActionWithMFA($login_detail, $mfa_code) {
+        if($mfa_code == '') {
+            $re = ["status"=> "error", "message" => "MFA code Required."];
+            return $re;
+        }
+        $query = "SELECT mfa_secret_key as sk from users where email = '".$login_detail['email']."'";
+        $secret = $this->con->qry($query, true);
+        $error = $this->con->error();
+        if($error[0] != '0000') {
+            $re = ["status"=> "error", "message" => "Something went wrong.", "log" => $error[2]];
+            return $re;
+        }
+        $ga = new PHPGangsta_GoogleAuthenticator();
+        //$oneCode = $ga->getCode($secret['sk']);
+        $checkResult = $ga->verifyCode($secret['sk'], $mfa_code, 2);
+        if($checkResult) {
+            $res = ['status' => 'success', 'message' => 'Code Verified and login successfully.'];
+            return $res;
+        } else {
+            $res = ['status' => 'error', 'message' => 'Invalid Code. Retry Again.'];
+            return $res;
         }
     }
 

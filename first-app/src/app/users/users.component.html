@@ -58,6 +58,10 @@
                             <option value="0">User</option>
                         </select>
                     </div>
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" id="switch1" formControlName="mfa" (change)="mfaToogle($event)" />
+                        <label class="custom-control-label" for="switch1">MFA</label>
+                    </div>
                     <div class="right">
                         <button (click)="modifyUser()" class="btn btn-primary">Submit</button>
                         <!-- <button (click)="modifyUser()" mat-raised-button color="primary">Submit</button> -->
@@ -65,30 +69,28 @@
                 </form>
             </div>
         </div>
-    </div>     
-
-            <!-- <div class="center">
-                <mat-form-field appearance="fill">
-                    <mat-label>Enter your Name</mat-label>
-                    <input matInput placeholder="Surendar" formControlName="name">
-                </mat-form-field>
-                <br>
-                <mat-form-field appearance="fill">
-                        <mat-label>Enter your email</mat-label>
-                        <input matInput placeholder="yourmail@domain.com" formControlName="email">
-                </mat-form-field>
-                <br>
-                <mat-form-field appearance="fill">
-                    <mat-label>Type</mat-label>
-                    <select matNativeControl formControlName="type">
-                      <option value="1">Admin</option>
-                      <option value="0">User</option>
-                    </select>
-                </mat-form-field>
-            </div> -->
-        
-    
-
-
-<!-- <mat-spinner *ngIf="this.usersLoader" class="loader"></mat-spinner> -->
+    </div>
 <div class="spinner-border text-primary loader" *ngIf="this.usersLoader"></div>
+
+
+<ng-template #mfa_modal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">MFA</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-sm-12 mt-2 bold">
+                Scan this QR Code
+            </div>
+            <div class="col-sm-12 text-center mt-2">
+                <img [src]="mfa_qr_code" alt="MFA QR Code" class="rounded" />
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+    </div>
+  </ng-template>
