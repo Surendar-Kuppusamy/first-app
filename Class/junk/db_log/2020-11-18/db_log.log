@@ -1,0 +1,2 @@
+[2020-11-18T17:52:36.952806+00:00] Test.ERROR: Unknown column 'hash_id' in 'field list' ["SELECT id, hash_id, mfa_status FROM users WHERE email = 'test@gmail.com' AND password = '12345678'"] 
+[2020-11-18T17:52:41.977782+00:00] Test.ERROR: Unknown column 'hash_id' in 'field list' ["SELECT id, hash_id, mfa_status FROM users WHERE email = 'test@gmail.com' AND password = '12345678'"] 

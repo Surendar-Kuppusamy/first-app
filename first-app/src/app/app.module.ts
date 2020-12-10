@@ -6,25 +6,46 @@ import { RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module } from 'ng-recaptcha';
 import { LockerModule, Locker, DRIVERS } from 'angular-safeguard';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LoginComponent } from './login/login.component';
-import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
+import { LoginComponent } from './loginView/login/login.component';
+import { PagenotfoundComponent } from './loginView/pagenotfound/pagenotfound.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgSelectModule } from '@ng-select/ng-select';
+
+import { SocialLoginModule, SocialAuthServiceConfig, GoogleLoginProvider, FacebookLoginProvider } from 'angularx-social-login';
 
 import { ToastrModule } from 'ngx-toastr';
-import { UsersComponent } from './users/users.component';
+import { UsersComponent } from './projectView/users/users.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AngularFileUploaderModule } from "angular-file-uploader";
-import { SocialLoginModule, SocialAuthServiceConfig } from 'angularx-social-login';
-import { GoogleLoginProvider, FacebookLoginProvider } from 'angularx-social-login';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { SignupComponent } from './loginView/signup/signup.component';
+import { ProductAddComponent } from './projectView/product-add/product-add.component';
+import { ProductListComponent } from './projectView/product-list/product-list.component';
+import { TaxesComponent } from './projectView/taxes/taxes.component';
+import { LogoutComponent } from './loginView/logout/logout.component';
+import { LoginWithGoogleComponent } from './loginView/login-with-google/login-with-google.component';
+
+
+const lockerConfig = {
+	driverNamespace: 'krsa',
+	driverFallback: [DRIVERS.LOCAL, DRIVERS.SESSION, DRIVERS.COOKIE],
+	namespaceSeperator: '-'
+  }
+
 
 @NgModule({
 	declarations: [
 		AppComponent,
 		LoginComponent,
 		PagenotfoundComponent,
-		UsersComponent
+		UsersComponent,
+		SignupComponent,
+		ProductAddComponent,
+		ProductListComponent,
+		TaxesComponent,
+		LogoutComponent,
+		LoginWithGoogleComponent
 	],
 	imports: [
 		BrowserModule,
@@ -42,8 +63,10 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 		LockerModule,
 		FontAwesomeModule,
 		AngularFileUploaderModule,
-		SocialLoginModule,
-		NgbModule
+		NgbModule,
+		NgSelectModule,
+		LockerModule.withConfig(lockerConfig),
+		SocialLoginModule
 	],
 	providers: [
 		{ provide: RECAPTCHA_V3_SITE_KEY, useValue: '6Lc8_tkZAAAAALeKPQpA-XmwDUJEYRrBfxu5HHck' },
@@ -54,12 +77,14 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 			  providers: [
 				{
 				  id: GoogleLoginProvider.PROVIDER_ID,
-				  provider: new GoogleLoginProvider('1040864376459-915ppinugtml87rq9i5o0hohirrjknhq.apps.googleusercontent.com')
-				}/* ,
+				  provider: new GoogleLoginProvider(
+					'1040864376459-915ppinugtml87rq9i5o0hohirrjknhq.apps.googleusercontent.com'
+				  )
+				},
 				{
 				  id: FacebookLoginProvider.PROVIDER_ID,
 				  provider: new FacebookLoginProvider('clientId')
-				} */
+				}
 			  ]
 			} as SocialAuthServiceConfig,
 		  }

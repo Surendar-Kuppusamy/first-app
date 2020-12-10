@@ -10,7 +10,8 @@
         "firebase/php-jwt": "^5.2",
         "google/recaptcha": "^1.2",
         "google/apiclient": "^2.8",
-        "phpgangsta/googleauthenticator": "dev-master"
+        "phpgangsta/googleauthenticator": "dev-master",
+        "nesbot/carbon": "^2.41"
     },
     "scripts": {
         "post-update-cmd": "Google\\Task\\Composer::cleanup"

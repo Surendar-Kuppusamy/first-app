@@ -8,7 +8,9 @@ use \Firebase\JWT\JWT;
 use ReCaptcha\ReCaptcha;
 use Google_Client;
 use PHPGangsta_GoogleAuthenticator;
+use Carbon\Carbon;
 use DB\DB;
+use App\Common;
 
 
 
@@ -27,6 +29,8 @@ class SignupLogin extends \Singleton {
         $CLIENT_ID = $_ENV['YOUR_CLIENT_ID'];
         $client = new Google_Client(['client_id' => $CLIENT_ID]);  // Specify the CLIENT_ID of the app that accesses the backend
         $payload = $client->verifyIdToken($google_token);
+        $re = ["status"=> "success", "message" => "Login get success", "token" => $payload];
+        return $re;
         if($payload) {
             $qry = "SELECT EXISTS (SELECT * FROM google_users WHERE email = '".$payload['email']."')";
             $qry_res = $this->con->qry($qry, true);
@@ -99,7 +103,7 @@ class SignupLogin extends \Singleton {
         } else {
             $userStatus = $this->checkCredential($data);
             if($userStatus) {
-                $query_1 = "SELECT id, hash_id, mfa_status FROM users WHERE email = '".$data['email']."' AND password = '".$data['password']."'";
+                $query_1 = "SELECT id, hash, mfa_status FROM users WHERE email = '".$data['email']."' AND password = '".$data['password']."'";
                 $resq_1 = $this->con->qry($query_1, true);
                 $error = $this->con->error();
                 if($error[0] != '0000') {
@@ -108,7 +112,7 @@ class SignupLogin extends \Singleton {
                 }
                 $token = $this->generateToken($resq_1['id']);
                 $sess_obj = \Session::createSession($data, $resq_1['id'], $token);
-                $re = ["status"=> "success", "message" => "Login get success", "token" => $token, "data" => json_encode($resp->toArray()), 'mfa_status' => $resq_1['mfa_status']];
+                $re = ["status"=> "success", "message" => "Login get success", "token" => $token, "data" => json_encode($resp->toArray()), 'mfa_status' => $resq_1['mfa_status'], "user_id" => $resq_1['id']];
                 return $re;
             } else {
                 $re = ["status"=> "error", "message" => "Invalid Credential"];
@@ -176,7 +180,7 @@ class SignupLogin extends \Singleton {
         $dotenv->load();
         $key = $_ENV['KEY'];
         $payload = array(
-            "iss" => "http://localhos.org",
+            "iss" => "http://localhos.com",
             "sub" => "Token",
             "aud" => "http://localhos.com",
             "exp" => time() + 82400,
@@ -187,6 +191,61 @@ class SignupLogin extends \Singleton {
         $jwt = JWT::encode($payload, $key);
         //$decoded = JWT::decode($jwt, $key, array('HS256'));
         return $jwt;
+    }
+
+
+    public function signup($userDetail, $id) {
+        $rules = [
+            'userName' => 'required|min:3|max:25',
+            'userEmail' => 'required|email',
+            'userPassword' => 'required|min:3|max:12'
+        ];
+        $messages = [
+            'required' => ':attribute required.',
+            'email' => ':attribute must be valid.',
+            'min' => ':attribute must be minimum 3 character.',
+            'max' => ':attribute reachs maximum character.'
+        ];
+        $validator = new Validator;
+        
+        $v = $validator->make($userDetail, $rules);
+        
+        $v->setAliases([
+            'userName' => 'Name',
+            'userEmail' => 'Email',
+            'userPassword' => 'Password'
+        ]);
+        
+        $v->setMessages($messages);
+
+        $v->validate();
+        if ($v->fails()) {
+            $errors = $v->errors();
+            $err = $errors->all();
+            $re = ["status"=> "error", "message" => $err[0]];
+            return $re;
+        } else {
+            $query = "SELECT EXISTS (SELECT id FROM users WHERE email = '".$userDetail['userEmail']."') AS userStatus";
+            $status = $this->con->qry($query, true);
+            if($status['userStatus']) {
+                $re = ["status"=> "error", "message" => 'User already available.'];
+                return $re;
+            } else {
+                $common = Common::getInstance();
+                $hash = $common->generateHash($userDetail['userEmail']);
+                $created_on = Carbon::now('UTC');
+                $query_1 = "INSERT INTO users (hash, name, email, password, type, created_by, created_on) VALUES ('".$hash."', '".$userDetail['userName']."',  '".$userDetail['userEmail']."',  '".$userDetail['userPassword']."',  'CLIENT', '".$id."', '".$created_on."')";
+                $this->con->qry($query_1, true);
+                $error = $this->con->error();
+                if($error[0] != '0000') {
+                    $re = ["status"=> "error", "message" => $error[2]];
+                    return $re;
+                } else {
+                    $re = ["status"=> "success", "message" => 'User inserted successfully.'];
+                    return $re;
+                }
+            }
+        }
     }
 }
 

@@ -1,0 +1,96 @@
+<div class="container" *ngIf="this.userid == null">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>No. </th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Type</th>
+                        <th>Edit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let user of userslist; let i = index">
+                        <td>{{ i + 1 }}.</td>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            <span *ngIf="user.type == 'ADMIN'">Admin</span>
+                            <span *ngIf="user.type == 'CLIENT'">User</span>
+                        </td>
+                        <td (click)="editSingleUser(user.id)" class="mousepointer"><fa-icon [icon]="faPencilAlt"></fa-icon></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="container usersform" *ngIf="this.userid != null">
+        <div class="row">
+            <div class="col-sm-12 text-right">
+                <div class="avatar_image">
+                    <span class="badge badge-pill badge-danger delete" (click)="removeUserAvatar()" *ngIf="this.avatar!='../../assets/images/nature1.jpg'"><fa-icon [icon]="faTimes"></fa-icon></span>
+                    <img [src]="this.avatar" alt="User Avatar" class="avatar" />
+                </div>
+                <div class="text-right">
+                    <angular-file-uploader #fileUpload1
+                        [config]="afuConfig"
+                        (ApiResponse)="uploadResponse($event)"
+                        >
+                    </angular-file-uploader>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <form [formGroup]="usersForm" id="users-form">
+                    <div class="form-group">
+                        <label for="user_name">Name</label>
+                        <input type="text" class="form-control" placeholder="Name" id="user_name" formControlName="name" />
+                    </div>
+                    <div class="form-group">
+                        <label for="user_email">Email</label>
+                        <input type="text" class="form-control" placeholder="Email" id="user_email" formControlName="email" />
+                    </div>
+                    <div class="form-group">
+                        <label for="user_type">Type</label>
+                        <select class="form-control" id="user_type" formControlName="type">
+                            <option value="ADMIN">Admin</option>
+                            <option value="CLIENT">User</option>
+                        </select>
+                    </div>
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" id="switch1" formControlName="mfa" (change)="mfaToogle($event)" />
+                        <label class="custom-control-label" for="switch1">MFA</label>
+                    </div>
+                    <div class="right">
+                        <button (click)="modifyUser()" class="btn btn-primary">Submit</button>
+                        <!-- <button (click)="modifyUser()" mat-raised-button color="primary">Submit</button> -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+<div class="spinner-border text-primary loader" *ngIf="this.usersLoader"></div>
+
+
+<ng-template #mfa_modal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">MFA</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-sm-12 mt-2 bold">
+                Scan this QR Code
+            </div>
+            <div class="col-sm-12 text-center mt-2">
+                <img [src]="mfa_qr_code" alt="MFA QR Code" class="rounded" />
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+    </div>
+  </ng-template>

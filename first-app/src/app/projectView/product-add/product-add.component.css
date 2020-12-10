@@ -1,0 +1,20 @@
+.ng-select.custom {
+    border:0px;
+    min-height: 0px;
+    border-radius: 0;
+}
+.ng-select.custom .ng-select-container  {            
+    min-height: 0px;
+    border-radius: 0;
+}
+.productAddForm {
+    border: 2px solid #ccc;
+    padding: 30px;
+    height: auto;
+    margin: 60px auto;
+    background-color: #eee;
+}
+.custom-group-text {
+    background-color: #007bff!important;
+    color:#fff;
+}

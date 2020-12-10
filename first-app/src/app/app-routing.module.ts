@@ -2,10 +2,15 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { APP_BASE_HREF, HashLocationStrategy, LocationStrategy } from '@angular/common';
 
-import { LoginComponent } from './login/login.component';
-import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
-import { UsersComponent } from './users/users.component';
-import { AuthService } from './auth/auth.service';
+import { LoginComponent } from './loginView/login/login.component';
+import { PagenotfoundComponent } from './loginView/pagenotfound/pagenotfound.component';
+import { UsersComponent } from './projectView/users/users.component';
+import { SignupComponent } from './loginView/signup/signup.component';
+import { ProductAddComponent } from './projectView/product-add/product-add.component'
+import { ProductListComponent } from './projectView/product-list/product-list.component';
+import { AuthService } from './services/auth/auth.service';
+import { LogoutComponent } from './loginView/logout/logout.component';
+import { LoginWithGoogleComponent } from './loginView/login-with-google/login-with-google.component';
 
 const routes: Routes = [
   {
@@ -18,19 +23,41 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
+    path: 'signup',
+    component: SignupComponent
+  },
+  {
+    path: 'loginwithgoogle',
+    component: LoginWithGoogleComponent
+  },
+  {
     path: 'users',
-    component: UsersComponent,
-    canActivate: [AuthService]
+    component: UsersComponent
   },
   {
     path: 'users/:id',
-    component: UsersComponent,
-    canActivate: [AuthService]
+    component: UsersComponent
+  },
+  {
+    path: 'product/add',
+    component: ProductAddComponent
+  },
+  {
+    path: 'product/:id',
+    component: ProductAddComponent
+  },
+  {
+    path: 'products',
+    component: ProductListComponent,
+    /* canActivate: [AuthService] */
+  },
+  {
+    path: 'logout',
+    component: LogoutComponent
   },
   {
     path: 'page',
-    component: PagenotfoundComponent,
-    canActivate: [AuthService]
+    component: PagenotfoundComponent
   },
   {
     path: '404',

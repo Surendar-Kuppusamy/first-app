@@ -54,9 +54,9 @@ class Users extends \Singleton {
 
     public function modifyUser($id, $data) {
         $rules = [
-            'name' => 'required|alpha_num|min:3|max:25',
+            'name' => 'required|min:3|max:25',
             'email' => 'required|email',
-            'type' => 'required|numeric'
+            'type' => 'required'
         ];
         $messages = [
             'required' => ':attribute required.',
@@ -84,6 +84,11 @@ class Users extends \Singleton {
             $re = ["status"=> "error", "message" => $err[0]];
             return $re;
         } else {
+            $pattern = "/^[-a-zA-Z0-9\s.]+$/i";
+            if(!preg_match($pattern, $data['name'])) {
+                $re = ["status"=> "error", "message" => "Product name must be alphanumeric."];
+                return $re;
+            }
             $query = "UPDATE users SET name = '".$data['name']."', email = '".$data['email']."', type = '".$data['type']."' WHERE id = '".$id."'";
 
             $this->db->qry($query, false);
