@@ -31,7 +31,12 @@ const lockerConfig = {
 	driverNamespace: 'krsa',
 	driverFallback: [DRIVERS.LOCAL, DRIVERS.SESSION, DRIVERS.COOKIE],
 	namespaceSeperator: '-'
-  }
+}
+const googleLoginOptions = {
+	scope: 'profile email',
+	//ux_mode: 'redirect',
+	//redirect_uri: 'http://localhost/Server/Angular10/Class/ajax/GoogleSign.php'
+};
 
 
 @NgModule({
@@ -78,12 +83,13 @@ const lockerConfig = {
 				{
 				  id: GoogleLoginProvider.PROVIDER_ID,
 				  provider: new GoogleLoginProvider(
-					'1040864376459-915ppinugtml87rq9i5o0hohirrjknhq.apps.googleusercontent.com'
+					'1040864376459-915ppinugtml87rq9i5o0hohirrjknhq.apps.googleusercontent.com',
+					googleLoginOptions
 				  )
 				},
 				{
 				  id: FacebookLoginProvider.PROVIDER_ID,
-				  provider: new FacebookLoginProvider('clientId')
+				  provider: new FacebookLoginProvider('734583643847772')
 				}
 			  ]
 			} as SocialAuthServiceConfig,

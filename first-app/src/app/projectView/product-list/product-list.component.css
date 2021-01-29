@@ -2,10 +2,22 @@
     padding: 10px;
     margin: 15px;
     border: 5px double #E0E0E0;
+    border-width:8px;
     background-color: #E0F7FA;
     box-shadow: 1px 1px 1px #ccc;
 }
 .product-image {
     max-width: 250px;
     max-height: 150px;
+}
+.input-group-text {
+    background-color: #e0f7fa;
+}
+.search-times {
+    position: absolute;
+    right:6px;
+    top:8px;
+    font-size: 16px;
+    z-index: 99;
+    cursor: pointer;
 }

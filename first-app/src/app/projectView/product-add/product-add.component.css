@@ -1,9 +1,9 @@
-.ng-select.custom {
+ng-select .custom {
     border:0px;
     min-height: 0px;
     border-radius: 0;
 }
-.ng-select.custom .ng-select-container  {            
+ng-select .custom .ng-select-container  {            
     min-height: 0px;
     border-radius: 0;
 }
@@ -17,4 +17,13 @@
 .custom-group-text {
     background-color: #007bff!important;
     color:#fff;
+}
+.avatar {
+    vertical-align: middle;
+    width: 200px;
+    height: 150px;
+    border: 4px double #fff;
+    border-width: 8px;
+    border-radius: 5%;
+    background-color: #fff;
 }

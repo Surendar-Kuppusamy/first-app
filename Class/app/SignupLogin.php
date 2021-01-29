@@ -57,6 +57,11 @@ class SignupLogin extends \Singleton {
         }
     }
 
+
+    public function loginWithFacebook($facebook_token) {
+        
+    }
+
     public function loginAction($data, $token) {
         $dotenv = \Dotenv\Dotenv::createImmutable('../conf');
         $dotenv->load();

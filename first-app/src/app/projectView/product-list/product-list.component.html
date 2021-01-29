@@ -1,11 +1,32 @@
-<div class="container">
+<div class="container" *ngIf="!this.productListLoader">
     <h1>Product List</h1>
     <div class="row">
-        <div class="col-md-6" *ngFor="let product of products; let i = index;">
+        <div class="col-sm-6">
+
+        </div>
+        <div class="col-sm-6">
+            <div class="input-group mb-3">
+                <div class="input-group-append">
+                    <span class="input-group-text"><fa-icon [icon]="faSearch"></fa-icon></span>
+                </div>
+                <input type="text" #searchbox id="searchbox" class="form-control" placeholder="Search for products by name" [formControl]="productSearch">
+                <span class="search-times text-danger" *ngIf="this.productSearch.value.length > 1" (click)="clearSearch()"><fa-icon [icon]="faTimes"></fa-icon></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 d-flex" *ngFor="let product of products; let i = index;">
             <div class="product">
                 <div class="row mt-2">
                     <div class="col-sm-12 pt-2">
-                        <img class="img-thumbnail product-image" [src]="product.image==null ? '../../assets/images/nature1.jpg' :product.image " alt="Product Image"  />
+                        <div class="row">
+                            <div class="col-sm-10">
+                                <img class="img-thumbnail product-image" [src]="product.image==null ? defaultImage :product.image " alt="Product Image"  />
+                            </div>
+                            <div class="col-sm-2">
+                                <a class="nav-link bold" routerLink="/product/{{product.id}}" ><fa-icon [icon]="faPencilAlt"></fa-icon></a>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-sm-4 pt-2">
                         Name
@@ -77,15 +98,20 @@
                         :
                     </div>
                     <div class="col-sm-7 pt-2">
-                        <div class="row" *ngFor="let tax of product.taxes;let i=index">
-                            <div class="col-sm-4">
-                                {{tax.tax_name}}
-                            </div>
-                            <div class="cpl-sm-4">
-                                =>
-                            </div>
-                            <div class="col-sm-4">
-                                {{tax.tax_value}} %
+                        <p>
+                            <button type="button" (click)="viewTaxes(product.id)">View Taxes</button>
+                        </p>
+                        <div [ngClass]="{'d-none': taxCollapse!=product.id}" id="product_{{product.id}}">
+                            <div class="row" *ngFor="let tax of product.taxes;let i=index">
+                                <div class="col-sm-4">
+                                    {{tax.tax_name}}
+                                </div>
+                                <div class="cpl-sm-4">
+                                    =>
+                                </div>
+                                <div class="col-sm-4">
+                                    {{tax.tax_value}} %
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -94,3 +120,5 @@
         </div>
     </div>
 </div>
+<div class="spinner-border text-primary loader" *ngIf="this.productListLoader"></div>
+

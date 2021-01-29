@@ -94,14 +94,17 @@ if($param == 'getProductType') {
 }
 
 if($param == 'getProducts') {
+    $keywords = $request->query->get('keywords');
+    
     $pt = Products::getInstance();
-    $res = $pt->getProducts();
+    $res = $pt->getProducts($keywords);
     $response->setData($res);
     $response->send();
     exit();
 }
 
 if($param == 'getProductForEdit') {
+    
     $product_id = $request->query->get('product_id');
     $pt = Products::getInstance();
     $res = $pt->getProductForEdit($product_id);

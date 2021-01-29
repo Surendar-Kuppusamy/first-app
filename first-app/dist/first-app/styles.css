@@ -74,19 +74,32 @@
 [dir="rtl"] .ng-dropdown-panel .ng-dropdown-panel-items .ng-option .ng-tag-label{padding-left:5px;padding-right:0}
 [dir="rtl"] .ng-dropdown-panel{direction:rtl;text-align:right}
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-color: #ECEFF1; }
 .afu-constraints-info {
     display: none !important;
 }
 .afu-attach-pin {
     background-color:#fff !important;
-    font-size: 12px;
-    padding:4px;
-    margin-top:10px;
-    font-weight: bold;
+    border-radius:5px !important;
+    font-size: 12px !important;
+    padding:4px !important;
+    font-weight: bold !important;
+    display:inline !important;
+    border-color:#007bff!important;
+    color:#007bff!important;
+    position: absolute;
+    top:2em;
+    right:10em;
+}
+.afu-attach-pin:hover {
+    background-color: #007bff!important;
+    color:#fff!important;
 }
 .label-info {
     display: none !important;
+}
+.form-control:focus {
+    box-shadow: 0 0 0 0rem rgba(0,123,255,.25)!important;
 }
 /* based on angular-toastr css https://github.com/Foxandxss/angular-toastr/blob/cb508fe6801d6b288d3afc525bb40fee1b101650/dist/angular-toastr.css */
 

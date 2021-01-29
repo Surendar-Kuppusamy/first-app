@@ -39,6 +39,15 @@ $data = json_decode($request->getContent(), true);
         $response->send();
     }
 
+    if($data['command'] == 'loginWithFacebook') {
+        $sl = SignupLogin::getInstance();
+        $res = $sl->loginWithFacebook($data['facebook_token']);
+        
+        $response = new MyResponse();
+        $response->setData($res);
+        $response->send();
+    }
+
     if($data['command'] == 'signup') {
         $sl = SignupLogin::getInstance();
         $res = $sl->signup($data['signupValue'], $data['id']);

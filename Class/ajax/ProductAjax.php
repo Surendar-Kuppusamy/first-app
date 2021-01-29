@@ -44,5 +44,20 @@ if($data['command'] == 'updateProduct') {
     $response->send();
 }
 
+if($data['command'] == 'removeTax') {
+    $pr_obj = Products::getInstance();
+    $res = $pr_obj->removeTax($data['hash'], $data['product_id']);
+    $response->setData($res);
+    $response->send();
+}
+
+
+if($data['command'] == 'remove_product_image') {
+    $pr_obj = Products::getInstance();
+    $res = $pr_obj->removeProdutImage($data['product_id']);
+    $response->setData($res);
+    $response->send();
+}
+
 
 ?>

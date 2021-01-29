@@ -210,7 +210,6 @@ class Products extends \Singleton {
         $this->db->qry($query, true);
         $id= $this->db->id();
         $error = $this->db->error();
-        error_log(serialize($error));
         if($error[0] != '0000') {
             $re = ["status"=> "error", "message" => $error[2], "query" => $this->db->last()];
             $this->db->pdo->rollBack();
@@ -222,8 +221,6 @@ class Products extends \Singleton {
         $query_1="INSERT INTO product_taxes (product_id, tax_id, product_tax_percentage, hash) VALUES ('".$id."', '".implode("'), ('".$id."', '", $implodeForTax)."')";
         $this->db->qry($query_1, true);
         $error_1 = $this->db->error();
-        error_log($this->db->last());
-        error_log(serialize($error_1));
         if($error_1[0] != '0000') {
             $re = ["status"=> "error", "message" => $error_1[2], "query" => $this->db->last()];
             return $re;
@@ -284,8 +281,12 @@ class Products extends \Singleton {
     }
 
 
-    public function getProducts() {
-        $query= "SELECT p.id, p.name, t.type, p.detail, p.image, p.discount_percentage, p.actual_price, p.discount_price, p.buy_type, p.buy_type_value, p.buy_type_unit FROM products p LEFT JOIN product_types t ON p.type = t.id LIMIT 0, 10";
+    public function getProducts($keywords) {
+        $where='';
+        if($keywords!==0) {
+            $where = "WHERE p.name LIKE '%".$keywords."%'";    
+        }
+        $query= "SELECT p.id, p.name, t.type, p.detail, p.image, p.discount_percentage, p.actual_price, p.discount_price, p.buy_type, p.buy_type_value, p.buy_type_unit FROM products p LEFT JOIN product_types t ON p.type = t.id ".$where." LIMIT 0, 10";
         $products = $this->db->qry($query, false);
         $error = $this->db->error();
         if($error[0] != '0000') {
@@ -311,7 +312,7 @@ class Products extends \Singleton {
 
 
     public function getProductForEdit($pid) {
-        $query= "SELECT p.id, p.name, p.type AS type_id, t.type, p.detail, p.image, p.discount_percentage, p.actual_price, p.discount_price, p.buy_type, p.buy_type_value, p.buy_type_unit FROM products p LEFT JOIN product_types t ON p.type = t.id WHERE '".$pid."'";
+        $query= "SELECT p.id, p.name, p.type AS type_id, t.type, p.detail, p.image, p.discount_percentage, p.actual_price, p.discount_price, p.buy_type, p.buy_type_value, p.buy_type_unit FROM products p LEFT JOIN product_types t ON p.type = t.id WHERE p.id = '".$pid."'";
         $product = $this->db->qry($query, true);
         $error = $this->db->error();
         if($error[0] != '0000') {
@@ -429,7 +430,7 @@ class Products extends \Singleton {
             $re = ["status"=> "error", "message" => "Product name must be alphanumeric."];
             return $re;
         }
-        $query_1="SELECT EXISTS (SELECT * FROM products WHERE name = '".$form['name']."' AND id != '".$pid."') AS pstatus";
+        $query_1="SELECT EXISTS (SELECT * FROM products WHERE name = '".$form['name']."' AND id != ".$pid.") AS pstatus";
         $qres=$this->db->qry($query_1, true);
         if($qres['pstatus']) {
             $re = ["status"=> "error", "message" => "Product name already exists."];
@@ -449,7 +450,6 @@ class Products extends \Singleton {
         $this->db->qry($query, true);
         $id= $this->db->id();
         $error = $this->db->error();
-        error_log(serialize($error));
         if($error[0] != '0000') {
             $re = ["status"=> "error", "message" => $error[2], "query" => $this->db->last()];
             $this->db->pdo->rollBack();
@@ -458,17 +458,43 @@ class Products extends \Singleton {
             error_log('Else Block');
         }
         $hash_1 = $com->generateHash('taxes');
-        $query_1="INSERT INTO product_taxes (product_id, tax_id, product_tax_percentage, hash) VALUES ('".$id."', '".implode("'), ('".$id."', '", $implodeForTax)."') ON DUPLICATE KEY UPDATE tax_id = VALUES(tax_id), product_tax_percentage = VALUES(product_tax_percentage)";
+        $query_1="INSERT INTO product_taxes (product_id, tax_id, product_tax_percentage, hash) VALUES (".$pid.", '".implode("'), ('".$pid."', '", $implodeForTax)."') ON DUPLICATE KEY UPDATE tax_id = VALUES(tax_id), product_tax_percentage = VALUES(product_tax_percentage)";
         $this->db->qry($query_1, true);
         $error_1 = $this->db->error();
-        error_log($this->db->last());
-        error_log(serialize($error_1));
         if($error_1[0] != '0000') {
             $re = ["status"=> "error", "message" => $error_1[2], "query" => $this->db->last()];
             return $re;
         } else {
             $this->db->pdo->commit();
             $re = ["status"=> "success", "message" => "Product added."];
+            return $re;
+        }
+    }
+
+
+    public function removeTax($hash, $product_id) {
+        $query="DELETE FROM product_taxes WHERE hash = '".$hash."' AND product_id = $product_id";
+        $this->db->qry($query, true);
+        $error = $this->db->error();
+        if($error[0] != '0000') {
+            $re = ["status"=> "error", "message" => $error[2], "query" => $this->db->last()];
+            return $re;
+        } else {
+            $re = ["status"=> "success", "message" => "Tax Removed."];
+            return $re;
+        }
+    }
+
+    public function removeProdutImage($pid) {
+        $re = ["status"=> "error", "message" => "Something went wrong"];
+        $query="UPDATE products SET image = '' WHERE id =".$pid."";
+        $this->db->qry($query, true);
+        $error = $this->db->error();
+        if($error[0] != '0000') {
+            $re = ['status'=>'error', 'message' => $error[2], 'query' => $this->db->last()];
+            return $re;
+        } else {
+            $re = ['status'=>'success', 'message' => 'Image Removed.'];
             return $re;
         }
     }

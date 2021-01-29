@@ -76,4 +76,53 @@ if($param=='user_avatar') {
     }
 }
 
+
+if($param=='product_image') {
+    $res = ['status' => 'error', 'message' => 'Invalid request.'];
+    $size = number_format($_FILES['file0']['size'] / 1048576, 2) . ' MB';
+    if($size > 1 ) {
+        $res = ['status' => 'error', 'message' => 'File size must be equal or less than 2MB.'];
+        $response->setData($res);
+        $response->send();
+        exit();
+    }
+    $allowed = array('jpeg', 'png', 'jpg');
+    $ext = strtolower(pathinfo($_FILES['file0']['name'], PATHINFO_EXTENSION));
+    if(!in_array($ext, $allowed)) {
+        error_log($ext);
+        $res = ['status' => 'error', 'message' => 'File type not allowed.'];
+        $response->setData($res);
+        $response->send();
+        exit();
+    }
+    $dir='../junk/images/';
+    $file=$dir.basename($_FILES['file0']['name']);
+    if(move_uploaded_file($_FILES['file0']['tmp_name'], $file)) {
+        $image_base_url=base64_encode(file_get_contents($file));
+        $image = 'data:image/'.$ext.';base64,'.$image_base_url;
+        $query = "UPDATE products SET image = '".$image."' WHERE id='".$id."'";
+        $db=DB::getInstance();
+        $con=$db->getConnection();
+        $con->qry($query, true);
+        $error=$con->error();
+        error_log(serialize($error));
+        if($error[0] != '0000') {
+            $res = ['status' => 'error', 'message' => $error[2], 'query' => $con->last()];
+            $response->setData($res);
+            $response->send();
+            exit();
+        } else {
+            $res = ['status' => 'success', 'message' => 'Profile image updated.', 'image' => $image, 'query' => $con->last()];
+            $response->setData($res);
+            $response->send();
+            exit();
+        }
+    } else {
+        $res = ['status' => 'error', 'message' => 'File not upload. Something went wrong'];
+        $response->setData($res);
+        $response->send();
+        exit();
+    }
+}
+
 ?>

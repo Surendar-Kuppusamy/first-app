@@ -2,21 +2,34 @@
 @import "~@ng-select/ng-select/themes/default.theme.css";
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-color: #ECEFF1; }
 
 
 .afu-constraints-info {
     display: none !important;
 }
-
 .afu-attach-pin {
     background-color:#fff !important;
-    font-size: 12px;
-    padding:4px;
-    margin-top:10px;
-    font-weight: bold;
+    border-radius:5px !important;
+    font-size: 12px !important;
+    padding:4px !important;
+    font-weight: bold !important;
+    display:inline !important;
+    border-color:#007bff!important;
+    color:#007bff!important;
+    position: absolute;
+    top:2em;
+    right:10em;
+}
+.afu-attach-pin:hover {
+    background-color: #007bff!important;
+    color:#fff!important;
 }
 
 .label-info {
     display: none !important;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 0rem rgba(0,123,255,.25)!important;
 }

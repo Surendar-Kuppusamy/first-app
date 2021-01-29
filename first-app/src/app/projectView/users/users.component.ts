@@ -42,7 +42,7 @@ export class UsersComponent implements OnInit {
 		theme: 'attachPin',
 		hideProgressBar: true,
 		hideResetBtn: true,
-		maxSize: 1,
+		maxSize: 2,
 		uploadAPI: {
 			url: environment.uploadAjaxUrl,
 			method:"POST",
@@ -56,7 +56,7 @@ export class UsersComponent implements OnInit {
 			},
 			responseType: 'json'
 		},
-		formatsAllowed: '.jpg,.png',
+		formatsAllowed: '.jpg,.png,.jpeg',
 		multiple: false,
 		replaceTexts: {
 			selectFileBtn: 'Select Files',
@@ -65,7 +65,7 @@ export class UsersComponent implements OnInit {
 			dragNDropBox: 'Drag N Drop',
 			attachPinBtn: 'Upload Image',
 			afterUploadMsg_success: 'Successfully Uploaded !',
-			afterUploadMsg_error: 'Upload Failed !'
+			afterUploadMsg_error: 'Upload Failed !',
 		}
 	  };
 	
@@ -140,7 +140,7 @@ export class UsersComponent implements OnInit {
 			});
 			//document.getElementById('mfa_switch').checked=this.users.data.mfa_status;
 			if(this.users.data.avatar=="") {
-				this.avatar='../../assets/images/nature1.jpg';
+				this.avatar=environment.defaultImage;
 			} else {
 				this.avatar='data:image/'+this.users.data.avatar_extension+';base64,'+this.users.data.avatar;
 			}
@@ -194,7 +194,7 @@ export class UsersComponent implements OnInit {
 			this.results = res;
 			if(this.results.status == 'success') {
 				this.toastrService.success(this.results.message);
-				this.avatar='../../assets/images/nature1.jpg';
+				this.avatar=environment.defaultImage;
 			} else {
 				this.toastrService.error(this.results.message);
 			}

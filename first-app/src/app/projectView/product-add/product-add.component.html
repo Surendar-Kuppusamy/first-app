@@ -1,6 +1,22 @@
 <div class="container">
     <h1 class="text-center">Add Products</h1>
     <div class="productAddForm">
+        <div class="row">
+            <div class="col-sm-12 text-right">
+                <div class="avatar_image">
+                    <!-- <span class="badge badge-pill badge-danger delete" *ngIf="this.product_image!='http://localhost/Server/Angular10/first-app/src/assets/images/nature1.jpg'"><fa-icon [icon]="faTimes"></fa-icon></span> -->
+                    <img [src]="this.product_image" alt="User Avatar" class="avatar" />
+                </div>
+            </div>
+            <div class="col-sm-12 text-right mt-n3">
+                <angular-file-uploader #fileUpload
+                    [config]="afuConfig"
+                    (ApiResponse)="uploadResponse($event)"
+                    >
+                </angular-file-uploader>
+                <button class="btn btn-sm btn-outline-danger" (click)="removeProductImage()">Remove</button>
+            </div>
+        </div>
         <form [formGroup]="productAddForm">
             <div class="form-group">
                 <label for="productName">
@@ -62,11 +78,11 @@
                                 <div ngbDropdown class="d-inline-block">
                                     <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle><span *ngIf="this.productAddForm.value.buyTypeUnit == ''">Units</span><span *ngIf="this.productAddForm.value.buyTypeUnit != null">{{productAddForm.controls["buyTypeUnit"].value}}</span></button>
                                     <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-                                        <button ngbDropdownItem  (click)="changeUnits('IT')" *ngIf="this.productAddForm.value.buyType == 'QNT' || this.productAddForm.value.buyType == null">Number of Items</button>
-                                        <button ngbDropdownItem  (click)="changeUnits('KG')" *ngIf="this.productAddForm.value.buyType == 'WGT' || this.productAddForm.value.buyType == null">Kilo Gram</button>
-                                        <button ngbDropdownItem  (click)="changeUnits('GR')" *ngIf="this.productAddForm.value.buyType == 'WGT' || this.productAddForm.value.buyType == null">Gram</button>
-                                        <button ngbDropdownItem  (click)="changeUnits('ML')" *ngIf="this.productAddForm.value.buyType == 'LTR' || this.productAddForm.value.buyType == null">Milli Litre</button>
-                                        <button ngbDropdownItem  (click)="changeUnits('LT')" *ngIf="this.productAddForm.value.buyType == 'LTR' || this.productAddForm.value.buyType == null">Litre</button>
+                                        <button ngbDropdownItem  (click)="changeUnits('IT')" *ngIf="(this.productAddForm.value.buyType == 'QNT' || this.productAddForm.value.buyType == null) && this.productAddForm.value.buyTypeUnit != 'IT'">Number of Items</button>
+                                        <button ngbDropdownItem  (click)="changeUnits('KG')" *ngIf="(this.productAddForm.value.buyType == 'WGT' || this.productAddForm.value.buyType == null) && this.productAddForm.value.buyTypeUnit != 'KG'">Kilo Gram</button>
+                                        <button ngbDropdownItem  (click)="changeUnits('GR')" *ngIf="(this.productAddForm.value.buyType == 'WGT' || this.productAddForm.value.buyType == null) && this.productAddForm.value.buyTypeUnit != 'GR'">Gram</button>
+                                        <button ngbDropdownItem  (click)="changeUnits('ML')" *ngIf="(this.productAddForm.value.buyType == 'LTR' || this.productAddForm.value.buyType == null) && this.productAddForm.value.buyTypeUnit != 'ML'">Milli Litre</button>
+                                        <button ngbDropdownItem  (click)="changeUnits('LT')" *ngIf="(this.productAddForm.value.buyType == 'LTR' || this.productAddForm.value.buyType == null) && this.productAddForm.value.buyTypeUnit != 'LT'">Litre</button>
                                     </div>
                                 </div>
                             </div>

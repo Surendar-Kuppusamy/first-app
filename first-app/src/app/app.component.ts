@@ -24,7 +24,6 @@ export class AppComponent {
 		});
 	}
   	
-
 	ngOnInit() {
 		if(this.locker.has(DRIVERS.COOKIE, 'token')) {
 			this.nav = true;

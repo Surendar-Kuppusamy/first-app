@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormArray, AbstractControl } from '@angular/forms';
 import { LockerModule, Locker, DRIVERS } from 'angular-safeguard';
+import { AngularFileUploaderConfig } from 'angular-file-uploader';
 import { ToastrService } from 'ngx-toastr';
+import { faPencilAlt, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { environment } from '../../../environments/environment';
 import { AjaxService } from '../../services/ajax/ajax.service';
 
@@ -17,8 +19,11 @@ export class ProductAddComponent implements OnInit {
 	constructor(private router: Router, private activatedRoute: ActivatedRoute, private fb: FormBuilder, private ajax: AjaxService, private toastr: ToastrService, private locker: Locker) { }
 
 	private results;
-	public product_id;
+	public product_id=this.activatedRoute.snapshot.paramMap.get('id');
 	public productLoader=false;
+	public product_image=environment.defaultImage;
+	public faPencilAlt=faPencilAlt;
+	public faTimes=faTimes;
 	public taxes: FormArray;
 	productTypes = [];
 	productTax = [];
@@ -53,6 +58,38 @@ export class ProductAddComponent implements OnInit {
 			})
 		])
 	});
+
+	afuConfig: AngularFileUploaderConfig = {
+		theme: 'attachPin',
+		hideProgressBar: true,
+		hideResetBtn: true,
+		maxSize: 1,
+		uploadAPI: {
+			url: environment.uploadAjaxUrl,
+			method:"POST",
+			headers: {
+				/* "Content-Type" : "text/plain;charset=UTF-8", */
+				"Authorization" : "Bearer" + this.locker.get(DRIVERS.COOKIE, 'token')
+			},
+			params: {
+				'params': 'product_image',
+				'id': this.product_id
+			},
+			responseType: 'json'
+		},
+		formatsAllowed: '.jpg,.png',
+		multiple: false,
+		replaceTexts: {
+			selectFileBtn: 'Select Files',
+			resetBtn: 'Reset',
+			uploadBtn: 'Upload',
+			dragNDropBox: 'Drag N Drop',
+			attachPinBtn: 'Upload Image',
+			afterUploadMsg_success: 'Successfully Uploaded !',
+			afterUploadMsg_error: 'Upload Failed !'
+		}
+	  };
+
 	loading=false;
 	public addTagPromise: (name)=>void;
 	public addTagTax: (name)=>void;
@@ -72,6 +109,8 @@ export class ProductAddComponent implements OnInit {
 		if(this.product_id != null) {
 			this.getAndSetProduct(this.product_id);
 		}
+
+		
 	}
 
 	tax() {
@@ -93,7 +132,21 @@ export class ProductAddComponent implements OnInit {
 		} else {
 			console.log(this.productAddForm.get('taxes').value[i].hash);
 			if(this.productAddForm.get('taxes').value[i].hash != '') {
-				console.log('edit');
+				const params = {
+					command: 'removeTax',
+					hash: this.productAddForm.get('taxes').value[i].hash,
+					product_id: this.product_id
+				};
+				this.ajax.post(environment.productAjaxUrl, params).subscribe(res => {
+					this.results=res;
+					console.log(this.results);
+					if(this.results.status == 'error') {
+						this.toastr.error(this.results.message);
+					} else {
+						this.toastr.success(this.results.message);
+						(this.productAddForm.get('taxes') as FormArray).removeAt(i);
+					}
+				});
 			} else {
 				(this.productAddForm.get('taxes') as FormArray).removeAt(i);
 			}
@@ -200,19 +253,23 @@ export class ProductAddComponent implements OnInit {
 	changeProductBuyType(event) {
 		if(this.productAddForm.get('buyType').value == 'QNT') {
 			this.productAddForm.patchValue({
-				buyTypeUnit: 'IT'
+				buyTypeUnit: 'IT',
+				buyTypeValue:''
 			});
 		} else if(this.productAddForm.get('buyType').value == 'WGT') {
 			this.productAddForm.patchValue({
-				buyTypeUnit: 'KG'
+				buyTypeUnit: 'KG',
+				buyTypeValue:''
 			});
 		} else if(this.productAddForm.get('buyType').value == 'LTR'){
 			this.productAddForm.patchValue({
-				buyTypeUnit: 'LT'
+				buyTypeUnit: 'LT',
+				buyTypeValue:''
 			});
 		} else {
 			this.productAddForm.patchValue({
-				buyTypeUnit: ''
+				buyTypeUnit: '',
+				buyTypeValue:''
 			});
 		}
 	}
@@ -258,10 +315,13 @@ export class ProductAddComponent implements OnInit {
 					buyTypeUnit: this.results.product.buy_type_unit
 				});
 				for(var i=0; i < this.results.product.taxes.length; i++) {
-					if(i < 2) {
+					if(i > 0) {
 						this.addTax(i);
 					}
 					this.tax().setControl(i, this.fb.group({tax: [this.results.product.taxes[i].tax_id], value:[this.results.product.taxes[i].tax_value], hash: [this.results.product.taxes[i].tax_table_id]}));
+				}
+				if(this.results.product.image!=='') {
+					this.product_image=this.results.product.image;
 				}
 			} else {
 				this.toastr.error(this.results.message);
@@ -282,7 +342,37 @@ export class ProductAddComponent implements OnInit {
 			this.results = res;
 			if(this.results.status == 'success') {
 				this.toastr.success(this.results.message);
-				this.productAddForm.reset();
+			} else {
+				this.toastr.error(this.results.message);
+			}
+			this.productLoader=false;
+		});
+	}
+
+
+	uploadResponse(event) {
+		console.log(event.body.status);
+		if(event.body.status == 'success') {
+			console.log(event.body.query);
+			this.toastr.success(event.body.message);
+			this.product_image=event.body.image;
+		} else {
+			this.toastr.error(event.body.message);
+		}
+	}
+
+	removeProductImage() {
+		console.log('Test');
+		this.productLoader=true;
+		const params = {
+			command: 'remove_product_image',
+			product_id: this.product_id
+		};
+		this.ajax.post(environment.productAjaxUrl, params).subscribe(res => {
+			this.results = res;
+			if(this.results.status == 'success') {
+				this.toastr.success(this.results.message);
+				this.product_image=environment.defaultImage;
 			} else {
 				this.toastr.error(this.results.message);
 			}

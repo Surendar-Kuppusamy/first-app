@@ -18,29 +18,27 @@ import { environment  } from '../.././../environments/environment';
 })
 export class LoginWithGoogleComponent implements OnInit {
 
-  public loginLoader;
-  public subscription: Subscription;
-  public results;
-
-  user: SocialUser;
+  	public loginLoader;
+  	public subscription: Subscription;
+ 	public results;
+  	user: SocialUser;
 	loggedIn: boolean;
 
   constructor(private locker: Locker, private router: Router, private ajax: AjaxService, public toastr: ToastrService, private socialAuthService: SocialAuthService, public authService: AuthService) {}
 
   ngOnInit(): void {
+	//this.socialAuthService.signIn(GoogleLoginProvider.PROVIDER_ID);
     this.socialAuthService.authState.subscribe((user) => {
-			this.user = user;
-			this.loggedIn = (user != null);
-			console.log(this.user);
-      console.log(this.loggedIn);
-      if(this.user!=null) {
-        this.loginWithGoogle();
-      }
-    });
-    
+		this.user = user;
+		this.loggedIn = (user != null);
+		console.log(this.user);
+      	if(this.user!=null) {
+        	this.loginWithGoogle();
+      	}
+	});
   }
 
-  loginWithGoogle() {
+	loginWithGoogle() {
 		this.loginLoader = true;
 		let res: any;
 		const data = {
@@ -50,8 +48,8 @@ export class LoginWithGoogleComponent implements OnInit {
 		this.ajax.post(environment.signupAjaxUrl, data).subscribe( (res) => {
 			this.results = res;
 			if(this.results.status == 'error') {
-        this.toastr.error(this.results.message);
-        this.router.navigate(['login']);
+				this.toastr.error(this.results.message);
+				this.router.navigate(['login']);
 			} else {
 				console.log(this.results.message)
 				this.toastr.success(this.results.message);

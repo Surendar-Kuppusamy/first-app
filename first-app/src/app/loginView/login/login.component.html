@@ -15,7 +15,8 @@
 			</div>
 			<div class="right mt-2">
 				<button (click)="signInWithGoogle()" class="btn btn-danger"><fa-icon [icon]="faGooglePlusG"></fa-icon> LOGIN WITH GOOGLE</button>
-				<!-- <button routerLink="/loginwithgoogle" class="btn btn-danger"><fa-icon [icon]="faGooglePlusG"></fa-icon> LOGIN WITH GOOGLE</button> -->
+				<!-- <a routerLink="/loginwithgoogle" class="btn btn-danger"><fa-icon [icon]="faGooglePlusG"></fa-icon> LOGIN WITH GOOGLE</a> -->
+				<button (click)="signInWithFB()" class="btn btn-primary mt-2"><fa-icon [icon]="faFacebookF"></fa-icon> LOGIN WITH FACEBOOK</button>
 			</div>
 				<!-- <div>{{loginForm.controls["email"].value}}</div> -->
 		</form>

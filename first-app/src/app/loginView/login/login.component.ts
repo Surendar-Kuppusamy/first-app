@@ -9,7 +9,7 @@ import { LockerModule, Locker, DRIVERS } from 'angular-safeguard';
 import { SocialAuthService, FacebookLoginProvider, GoogleLoginProvider, SocialUser } from "angularx-social-login";
 
 import { faPencilAlt, faTimes, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { faGoogle, faGooglePlusG } from '@fortawesome/free-brands-svg-icons';
+import { faGoogle, faGooglePlusG, faFacebookF  } from '@fortawesome/free-brands-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { environment  } from '../.././../environments/environment';
 import { AjaxService } from '../../services/ajax/ajax.service';
@@ -30,6 +30,7 @@ export class LoginComponent implements OnInit {
 	public handletoken;
 	public loginLoader = false;
 	public faGooglePlusG=faGooglePlusG;
+	public faFacebookF=faFacebookF;
 	public faPlus=faPlus;
 
 	user: SocialUser;
@@ -57,15 +58,84 @@ export class LoginComponent implements OnInit {
 			this.authService.navChange('change');
 			this.router.navigate(['users']);
 		}
+		this.socialAuthService.authState.subscribe((user) => {
+			this.user = user;
+			this.loggedIn = (user != null);
+			console.log(this.user);
+			if(this.loggedIn && this.user.provider == 'GOOGLE') {
+				this.loginWithGoogle();
+			} else if(this.loggedIn && this.user.provider == 'FACEBOOK') {
+
+			}
+		}, (error) => {
+			console.log(error);
+		});
 	}
 
 	signInWithGoogle(): void {
 		this.socialAuthService.signIn(GoogleLoginProvider.PROVIDER_ID);
-		this.router.navigate(['loginwithgoogle']);
+		//this.router.navigate(['loginwithgoogle']);
+	}
+
+	signInWithFB(): void {
+		this.socialAuthService.signIn(FacebookLoginProvider.PROVIDER_ID);
 	}
 
 	signOut(): void {
 		this.socialAuthService.signOut();
+	}
+
+
+	loginWithGoogle() {
+		console.log('Test');
+		this.loginLoader = true;
+		let res: any;
+		const data = {
+			command: 'loginWithGoogle',
+			google_token: this.user.idToken
+		};
+		this.ajax.post(environment.signupAjaxUrl, data).subscribe( (res) => {
+			this.results = res;
+			if(this.results.status == 'error') {
+				this.toastr.error(this.results.message);
+				console.log(this.results.message);
+				this.router.navigate(['login']);
+			} else {
+				console.log(this.results.message)
+				this.toastr.success(this.results.message);
+				this.locker.set(DRIVERS.COOKIE, 'token', this.results.token);
+				this.locker.set(DRIVERS.COOKIE, 'session', 'social');
+				this.authService.navChange('change');
+				this.router.navigate(['users']);
+			}
+			this.loginLoader = false;
+		});
+	}
+
+
+	loginWithFacebook() {
+		this.loginLoader = true;
+		let res: any;
+		const data = {
+			command: 'loginWithFacebook',
+			google_token: this.user.authToken
+		};
+		this.ajax.post(environment.signupAjaxUrl, data).subscribe( (res) => {
+			this.results = res;
+			if(this.results.status == 'error') {
+				this.toastr.error(this.results.message);
+				console.log(this.results.message);
+				this.router.navigate(['login']);
+			} else {
+				console.log(this.results.message)
+				this.toastr.success(this.results.message);
+				this.locker.set(DRIVERS.COOKIE, 'token', this.results.token);
+				this.locker.set(DRIVERS.COOKIE, 'session', 'social');
+				this.authService.navChange('change');
+				this.router.navigate(['users']);
+			}
+			this.loginLoader = false;
+		});
 	}
 
 
